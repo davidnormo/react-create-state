@@ -135,6 +135,28 @@ it("subscribe", () => {
   expect(i).toBe(3);
 });
 
+it("example of substate with setter", () => {
+  const [useX, setX] = createState({ a: {}, b: {} });
+  const useA = () => {
+    const a = useX((state) => state.a);
+    const updateA = (newA: Record<string, any>) => {
+      setX((state) => ({
+        ...state,
+        a: newA,
+      }));
+    };
+    return [a, updateA] as const;
+  };
+
+  const { result } = renderHook(() => useA());
+
+  expect(result.current[0]).toEqual({});
+  act(() => {
+    result.current[1]({ foo: "bar" });
+  });
+  expect(result.current[0]).toEqual({ foo: "bar" });
+});
+
 describe("complex object state", () => {
   const [useObjState, setObjState] = createState({
     a: { b: { c: 1, y: "bar" }, x: "foo" },
