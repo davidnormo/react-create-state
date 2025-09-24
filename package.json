@@ -24,6 +24,6 @@
   "description": "",
   "dependencies": {
     "@types/react": "^19.1.13",
-    "react": "^19.1.1"
+    "react": "^17 || ^18 || ^19"
   }
 }
