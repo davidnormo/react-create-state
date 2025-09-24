@@ -1,8 +1,6 @@
-import { act, render, renderHook, screen } from "@testing-library/react";
 import React from "react";
-import { createState } from "./src";
-
-React;
+import { act, render, renderHook, screen } from "@testing-library/react";
+import { createState } from ".";
 
 const [useState, setState, getState, subscribe] = createState(0);
 
