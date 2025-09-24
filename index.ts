@@ -5,17 +5,15 @@ export const createState = <T>(state: T) => {
     localVal: any;
     setter: (val: any) => void;
     selector: (state: T) => any;
-    deps: any[];
   }[] = [];
 
   const useStateLocal = <Ret>(
     selector: (state: T) => Ret,
-    deps: any[]
   ): Ret => {
     const [localVal, setter] = useState(() => selector(state));
 
     useEffect(() => {
-      listeners.push({ localVal, setter, selector, deps });
+      listeners.push({ localVal, setter, selector });
       return () => {
         const index = listeners.findIndex((l) => l.setter === setter);
         if (index !== -1) {
@@ -47,7 +45,6 @@ export const createState = <T>(state: T) => {
       localVal: NaN,
       setter,
       selector: (x) => x,
-      deps: [],
     });
     return () => {
       const index = listeners.findIndex((l) => l.setter === setter);

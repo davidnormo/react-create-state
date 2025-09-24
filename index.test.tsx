@@ -5,7 +5,7 @@ import { createState } from ".";
 const [useState, setState, getState, subscribe] = createState(0);
 
 const TestComponent = () => {
-  const state = useState((x) => x, []);
+  const state = useState((x) => x);
   return (
     <div>
       <span data-testid="state">{state}</span>
@@ -14,18 +14,18 @@ const TestComponent = () => {
 };
 
 it("useState - get value", () => {
-  const { result } = renderHook(() => useState((x) => x, []));
+  const { result } = renderHook(() => useState((x) => x));
   expect(result.current).toBe(0);
 });
 
 it("useState - get value with deps", () => {
   let a = 1;
-  const { result } = renderHook(() => useState((x) => x + a, [a]));
+  const { result } = renderHook(() => useState((x) => x + a));
   expect(result.current).toBe(1);
 });
 
 it("useState - get updated value", () => {
-  const { result } = renderHook(() => useState((x) => x, []));
+  const { result } = renderHook(() => useState((x) => x));
 
   act(() => {
     setState(1);
@@ -36,7 +36,7 @@ it("useState - get updated value", () => {
 
 it("setState with function", () => {
   setState(10);
-  const { result } = renderHook(() => useState((x) => x, []));
+  const { result } = renderHook(() => useState((x) => x));
 
   act(() => {
     setState((x) => x + 1);
@@ -60,7 +60,7 @@ it("getState", () => {
 it("encapsulation", () => {
   setState(1);
   const useDoubleState = () => {
-    return useState((x) => x * 2, []);
+    return useState((x) => x * 2);
   };
 
   const { result } = renderHook(() => useDoubleState());
@@ -71,7 +71,7 @@ it("encapsulation", () => {
 it("encapsulation - stringified", () => {
   setState(1);
   const useStrState = () => {
-    return useState((x) => `num: ${x}`, []);
+    return useState((x) => `num: ${x}`);
   };
 
   const { result } = renderHook(() => useStrState());
@@ -82,7 +82,7 @@ it("encapsulation - stringified", () => {
 it("no zombie children allowed", () => {
   setState(0);
   const Parent = () => {
-    const value = useState((x) => x, []);
+    const value = useState((x) => x);
 
     return (
       <div>
@@ -144,17 +144,17 @@ describe("complex object state", () => {
 
   const RenderA = () => {
     renderCounts.A++;
-    const state = useObjState((x) => JSON.stringify(x.a), []);
+    const state = useObjState((x) => JSON.stringify(x.a));
     return <span data-testid="A">{state}</span>;
   };
   const RenderB = () => {
     renderCounts.B++;
-    const state = useObjState((x) => JSON.stringify(x.a.b), []);
+    const state = useObjState((x) => JSON.stringify(x.a.b));
     return <span data-testid="B">{state}</span>;
   };
   const RenderC = () => {
     renderCounts.C++;
-    const state = useObjState((x) => x.a.b.c, []);
+    const state = useObjState((x) => x.a.b.c);
     return <span data-testid="C">{state}</span>;
   };
 

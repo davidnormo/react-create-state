@@ -3,6 +3,7 @@
     "target": "es6",
     "moduleResolution": "bundler",
     "module": "es6",
-    "jsx": "preserve"
+    "jsx": "preserve",
+    "types": ["vitest/globals"]
   }
 }

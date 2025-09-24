@@ -1,10 +1,10 @@
 import { useEffect, useState } from "react";
 export const createState = (state) => {
     const listeners = [];
-    const useStateLocal = (selector, deps) => {
+    const useStateLocal = (selector) => {
         const [localVal, setter] = useState(() => selector(state));
         useEffect(() => {
-            listeners.push({ localVal, setter, selector, deps });
+            listeners.push({ localVal, setter, selector });
             return () => {
                 const index = listeners.findIndex((l) => l.setter === setter);
                 if (index !== -1) {
@@ -32,7 +32,6 @@ export const createState = (state) => {
             localVal: NaN,
             setter,
             selector: (x) => x,
-            deps: [],
         });
         return () => {
             const index = listeners.findIndex((l) => l.setter === setter);
