@@ -1,40 +1,61 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 
-export const createState = <T>(
-  state: T
-): [
-  <Ret>(selector: (state: T) => Ret, deps: any[]) => Ret,
-  (fn: (state: T) => T) => void,
-  () => T
-] => {
-  const listeners: any[] = [];
+export const createState = <T>(state: T) => {
+  const listeners: {
+    localVal: any;
+    setter: (val: any) => void;
+    selector: (state: T) => any;
+    deps: any[];
+  }[] = [];
 
   const useStateLocal = <Ret>(
     selector: (state: T) => Ret,
     deps: any[]
   ): Ret => {
-    const [, setter] = useState(true);
+    const [localVal, setter] = useState(() => selector(state));
 
     useEffect(() => {
-      listeners.push(setter);
+      listeners.push({ localVal, setter, selector, deps });
       return () => {
-        const index = listeners.indexOf(setter);
+        const index = listeners.findIndex((l) => l.setter === setter);
         if (index !== -1) {
           listeners.splice(index, 1);
         }
       };
     }, []);
 
-    return useMemo(() => selector(state), [...deps, state]);
+    return localVal;
   };
 
-  const setState = (fn: (state: T) => T) => {
-    const newState = fn(state);
+  const setState = (fn: T | ((state: T) => T)) => {
+    // @ts-ignore
+    const newState = typeof fn === "function" ? fn(state) : fn;
     state = newState;
-    listeners.forEach((listener) => listener((v: boolean) => !v));
+    listeners.forEach((listener) => {
+      let tmp = listener.selector(newState);
+      if (tmp !== listener.localVal) {
+        listener.localVal = tmp;
+        listener.setter(tmp);
+      }
+    });
   };
 
   const getState = () => state;
 
-  return [useStateLocal, setState, getState];
+  const subscribe = (setter: (state: T) => void): (() => void) => {
+    listeners.push({
+      localVal: NaN,
+      setter,
+      selector: (x) => x,
+      deps: [],
+    });
+    return () => {
+      const index = listeners.findIndex((l) => l.setter === setter);
+      if (index !== -1) {
+        listeners.splice(index, 1);
+      }
+    };
+  };
+
+  return [useStateLocal, setState, getState, subscribe] as const;
 };
