@@ -28,10 +28,10 @@ export const createState = (state) => {
         state = newState;
         listeners.forEach((listener) => {
             let tmp = listener.selector(newState);
-            // if (tmp !== listener.localVal) {
-            // listener.localVal = tmp;
-            listener.setter(tmp);
-            // }
+            if (tmp !== listener.localVal) {
+                listener.localVal = tmp;
+                listener.setter(tmp);
+            }
         });
     };
     const getState = () => state;

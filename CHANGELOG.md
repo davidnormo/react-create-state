@@ -1,5 +1,11 @@
 # react-create-state
 
+## 0.2.1
+
+### Patch Changes
+
+- Small performance update
+
 ## 0.2.0
 
 ### Minor Changes
