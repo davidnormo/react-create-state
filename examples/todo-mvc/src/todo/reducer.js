@@ -47,14 +47,16 @@ function nanoid(size = 21) {
 const [useTodos, setTodos] = createState([]);
 
 export const useVisibleTodos = (route) => {
-  return useTodos((todos) =>
-    todos.filter((todo) => {
-      if (route === "/active") return !todo.completed;
+  return useTodos(
+    (todos) =>
+      todos.filter((todo) => {
+        if (route === "/active") return !todo.completed;
 
-      if (route === "/completed") return todo.completed;
+        if (route === "/completed") return todo.completed;
 
-      return todo;
-    })
+        return todo;
+      }),
+    [route]
   );
 };
 

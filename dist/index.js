@@ -1,12 +1,17 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 const id = (x) => x;
 export const createState = (state) => {
     const listeners = [];
-    function useStateLocal(selector) {
+    function useStateLocal(selector, deps = []) {
         selector = selector || (id);
-        const [localVal, setter] = useState(() => selector(state));
+        const localVal = useMemo(() => selector(state), [...deps, state]);
+        const [, setter] = useState(localVal);
+        const listenerRef = useRef({ setter, selector, deps, localVal });
+        listenerRef.current.selector = selector;
+        listenerRef.current.deps = deps;
+        listenerRef.current.localVal = localVal;
         useEffect(() => {
-            listeners.push({ localVal, setter, selector });
+            listeners.push(listenerRef.current);
             return () => {
                 const index = listeners.findIndex((l) => l.setter === setter);
                 if (index !== -1) {
@@ -23,10 +28,10 @@ export const createState = (state) => {
         state = newState;
         listeners.forEach((listener) => {
             let tmp = listener.selector(newState);
-            if (tmp !== listener.localVal) {
-                listener.localVal = tmp;
-                listener.setter(tmp);
-            }
+            // if (tmp !== listener.localVal) {
+            // listener.localVal = tmp;
+            listener.setter(tmp);
+            // }
         });
     };
     const getState = () => state;
@@ -35,6 +40,7 @@ export const createState = (state) => {
             localVal: NaN,
             setter,
             selector: (x) => x,
+            deps: []
         });
         return () => {
             const index = listeners.findIndex((l) => l.setter === setter);

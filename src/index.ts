@@ -44,10 +44,10 @@ export const createState = <T>(state: T) => {
     state = newState;
     listeners.forEach((listener) => {
       let tmp = listener.selector(newState);
-      // if (tmp !== listener.localVal) {
-        // listener.localVal = tmp;
+      if (tmp !== listener.localVal) {
+        listener.localVal = tmp;
         listener.setter(tmp);
-      // }
+      }
     });
   };
 
