@@ -25,8 +25,27 @@ it("useState - get value with selector", () => {
 
 it("useState - get value with deps", () => {
   let a = 1;
-  const { result } = renderHook(() => useState((x) => x + a));
+  const { result, rerender } = renderHook(() => useState((x) => x + a, [a]));
+
+  a = 2;
   expect(result.current).toBe(1);
+
+  rerender();
+  expect(result.current).toBe(2);
+});
+
+it("useState + setState - get value with deps", () => {
+  let a = 1;
+  const { result } = renderHook(() => useState((x) => x + a, [a]));
+
+  a = 2;
+  expect(result.current).toBe(1);
+
+  act(() => {
+    setState(2);
+  });
+
+  expect(result.current).toBe(4);
 });
 
 it("useState - get updated value", () => {

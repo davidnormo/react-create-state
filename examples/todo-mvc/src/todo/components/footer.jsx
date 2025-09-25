@@ -1,9 +1,8 @@
-import { useCallback, useMemo } from "react";
 import { useLocation } from "react-router-dom";
 import classnames from "classnames";
 
 import { REMOVE_COMPLETED_ITEMS } from "../constants";
-import { useActiveTodosCount, useTotalTodosCount } from "../reducer";
+import { removeCompletedItems, useActiveTodosCount, useTotalTodosCount } from "../reducer";
 
 export function Footer() {
     const { pathname: route } = useLocation();
@@ -11,10 +10,8 @@ export function Footer() {
     const activeTodosCount = useActiveTodosCount();
     const totalTodosCount = useTotalTodosCount();
 
-    const removeCompleted = useCallback(() => dispatch({ type: REMOVE_COMPLETED_ITEMS }), [dispatch]);
-
     // prettier-ignore
-    if (todos.length === 0)
+    if (totalTodosCount === 0)
         return null;
 
     return (
@@ -37,7 +34,7 @@ export function Footer() {
                     </a>
                 </li>
             </ul>
-            <button className="clear-completed" disabled={activeTodosCount === totalTodosCount} onClick={removeCompleted}>
+            <button className="clear-completed" disabled={activeTodosCount === totalTodosCount} onClick={removeCompletedItems}>
                 Clear completed
             </button>
         </footer>
