@@ -44,7 +44,7 @@ export const Item = memo(function Item({ todo }) {
                         <label data-testid="todo-item-label" onDoubleClick={handleDoubleClick}>
                             {title}
                         </label>
-                        <button className="destroy" data-testid="todo-item-button" onClick={removeItem} />
+                        <button className="destroy" data-testid="todo-item-button" onClick={() => removeItem(id)} />
                     </>
                 )}
             </div>
