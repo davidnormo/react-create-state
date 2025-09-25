@@ -1,11 +1,11 @@
 import React from "react";
 import { act, render, renderHook, screen } from "@testing-library/react";
-import { createState } from ".";
+import { createState } from "./index";
 
 const [useState, setState, getState, subscribe] = createState(0);
 
 const TestComponent = () => {
-  const state = useState((x) => x);
+  const state = useState();
   return (
     <div>
       <span data-testid="state">{state}</span>
@@ -13,7 +13,12 @@ const TestComponent = () => {
   );
 };
 
-it("useState - get value", () => {
+it("useState - get value with no selector", () => {
+  const { result } = renderHook(() => useState());
+  expect(result.current).toBe(0);
+});
+
+it("useState - get value with selector", () => {
   const { result } = renderHook(() => useState((x) => x));
   expect(result.current).toBe(0);
 });
@@ -25,7 +30,7 @@ it("useState - get value with deps", () => {
 });
 
 it("useState - get updated value", () => {
-  const { result } = renderHook(() => useState((x) => x));
+  const { result } = renderHook(() => useState());
 
   act(() => {
     setState(1);
@@ -36,7 +41,7 @@ it("useState - get updated value", () => {
 
 it("setState with function", () => {
   setState(10);
-  const { result } = renderHook(() => useState((x) => x));
+  const { result } = renderHook(() => useState());
 
   act(() => {
     setState((x) => x + 1);
@@ -82,7 +87,7 @@ it("encapsulation - stringified", () => {
 it("no zombie children allowed", () => {
   setState(0);
   const Parent = () => {
-    const value = useState((x) => x);
+    const value = useState();
 
     return (
       <div>

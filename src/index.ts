@@ -1,5 +1,7 @@
 import { useEffect, useState } from "react";
 
+const id = <T>(x: T): T => x;
+
 export const createState = <T>(state: T) => {
   const listeners: {
     localVal: any;
@@ -7,9 +9,12 @@ export const createState = <T>(state: T) => {
     selector: (state: T) => any;
   }[] = [];
 
-  const useStateLocal = <Ret>(
-    selector: (state: T) => Ret,
-  ): Ret => {
+  function useStateLocal(selector?: never): T;
+  function useStateLocal<Ret>(selector: ((state: T) => Ret)): Ret;
+  function useStateLocal <Ret>(
+    selector?: ((state: T) => T) | ((state: T) => Ret),
+  ): T | Ret {
+    selector = selector || id<T>;
     const [localVal, setter] = useState(() => selector(state));
 
     useEffect(() => {

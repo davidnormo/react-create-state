@@ -1,7 +1,9 @@
 import { useEffect, useState } from "react";
+const id = (x) => x;
 export const createState = (state) => {
     const listeners = [];
-    const useStateLocal = (selector) => {
+    function useStateLocal(selector) {
+        selector = selector || (id);
         const [localVal, setter] = useState(() => selector(state));
         useEffect(() => {
             listeners.push({ localVal, setter, selector });
@@ -13,7 +15,8 @@ export const createState = (state) => {
             };
         }, []);
         return localVal;
-    };
+    }
+    ;
     const setState = (fn) => {
         // @ts-ignore
         const newState = typeof fn === "function" ? fn(state) : fn;
