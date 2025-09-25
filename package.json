@@ -1,6 +1,6 @@
 {
   "name": "react-create-state",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "files": [
     "dist"
   ],
@@ -8,6 +8,7 @@
   "types": "./dist/index.d.ts",
   "scripts": {
     "test": "vitest",
+    "version": "npx @changesets/cli version && npm i && git commit -am 'version package'",
     "prepack": "tsc --project ./tsconfig.build.json"
   },
   "keywords": [],
