@@ -1,5 +1,11 @@
 # react-create-state
 
+## 0.3.0
+
+### Minor Changes
+
+- 26fb47a: Added the `reinitializeAll` function + documentation updates
+
 ## 0.2.1
 
 ### Patch Changes

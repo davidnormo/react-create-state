@@ -55,6 +55,7 @@ export const createState = (initialState) => {
             deps: []
         };
         listeners.push(listener);
+        setter(state);
         return () => {
             unsubListener(listener);
         };
