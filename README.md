@@ -39,8 +39,10 @@ const Counter = () => {
 | async/promises           |                   ✅                    |                   ✅                   |                  ✅                  |                      ✅                      |
 | SSR                      |                   ✅                    |                   ✅                   |                  ✅                  |                      ❌                      |
 | Learning Curve           | <span style="color:green">Gentle</span> | <span style="color:yellow">Mild</span> | <span style="color:red">Steep</span> | <span style="color:green">Very Gentle</span> |
+| Ergonomics\*\*           |                Pleasant                 |              Bit Awkward               |              Functional              |                    Simple                    |
 
-\*Requires installing whole of the react-use package
+\* Requires installing whole of the react-use package<br />
+\*\* How easy it is to use and write code with. This is quite subjective depending on your experience and preference
 
 ## API
 
