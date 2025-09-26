@@ -1,6 +1,6 @@
 import React from "react";
 import { act, render, renderHook, screen } from "@testing-library/react";
-import { createState } from "./index";
+import { createState, reinitializeAll } from "./index";
 
 const [useState, setState, getState, subscribe] = createState(0);
 
@@ -302,5 +302,23 @@ describe("complex object state", () => {
     );
     expect(screen.getByTestId("B").textContent).toBe('{"c":2,"y":"new bar"}');
     expect(screen.getByTestId("C").textContent).toBe("2");
+  });
+});
+
+describe("reinitializeAll", () => {
+  it("sets all state back to initial state", () => {
+    const [useNum, setNum, getNum] = createState(0);
+    const Test = () => <div data-testid="test">{useNum()}</div>;
+    setNum(1);
+
+    render(<Test />);
+    expect(screen.getByTestId("test").textContent).toBe("1");
+    expect(getNum()).toBe(1);
+
+    act(() => {
+      reinitializeAll();
+    });
+    expect(screen.getByTestId("test").textContent).toBe("0");
+    expect(getNum()).toBe(0);
   });
 });

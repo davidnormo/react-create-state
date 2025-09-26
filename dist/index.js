@@ -1,7 +1,29 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 const id = (x) => x;
-export const createState = (state) => {
+const registry = [];
+export const createState = (initialState) => {
+    let state = initialState;
     const listeners = [];
+    const unsubListener = (listener) => {
+        const index = listeners.findIndex((l) => l.setter === listener.setter);
+        if (index !== -1) {
+            listeners.splice(index, 1);
+        }
+    };
+    const notifyListeners = () => {
+        listeners.forEach((listener) => {
+            let tmp = listener.selector(state);
+            if (tmp !== listener.localVal) {
+                listener.localVal = tmp;
+                listener.setter(tmp);
+            }
+        });
+    };
+    const reinitialize = () => {
+        state = initialState;
+        notifyListeners();
+    };
+    registry.push(reinitialize);
     function useStateLocal(selector, deps = []) {
         selector = selector || (id);
         const localVal = useMemo(() => selector(state), [...deps, state]);
@@ -13,10 +35,7 @@ export const createState = (state) => {
         useEffect(() => {
             listeners.push(listenerRef.current);
             return () => {
-                const index = listeners.findIndex((l) => l.setter === setter);
-                if (index !== -1) {
-                    listeners.splice(index, 1);
-                }
+                unsubListener(listenerRef.current);
             };
         }, []);
         return localVal;
@@ -24,30 +43,24 @@ export const createState = (state) => {
     ;
     const setState = (fn) => {
         // @ts-ignore
-        const newState = typeof fn === "function" ? fn(state) : fn;
-        state = newState;
-        listeners.forEach((listener) => {
-            let tmp = listener.selector(newState);
-            if (tmp !== listener.localVal) {
-                listener.localVal = tmp;
-                listener.setter(tmp);
-            }
-        });
+        state = typeof fn === "function" ? fn(state) : fn;
+        notifyListeners();
     };
     const getState = () => state;
     const subscribe = (setter) => {
-        listeners.push({
+        const listener = {
             localVal: NaN,
             setter,
             selector: (x) => x,
             deps: []
-        });
+        };
+        listeners.push(listener);
         return () => {
-            const index = listeners.findIndex((l) => l.setter === setter);
-            if (index !== -1) {
-                listeners.splice(index, 1);
-            }
+            unsubListener(listener);
         };
     };
     return [useStateLocal, setState, getState, subscribe];
+};
+export const reinitializeAll = () => {
+    registry.forEach(cb => cb());
 };
