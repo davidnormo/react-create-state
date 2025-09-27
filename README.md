@@ -25,6 +25,14 @@ const Counter = () => {
 };
 ```
 
+## Install
+
+With your package manager of choice
+
+```
+npm install react-create-state
+```
+
 ## Compared
 
 |                          |           react-create-state            |                Zustand                 |                Jotai                 |        react-use `createGlobalState`         |
