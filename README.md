@@ -25,6 +25,8 @@ const Counter = () => {
 };
 ```
 
+[Install](#install) | [API](#api)
+
 ## Install
 
 With your package manager of choice
