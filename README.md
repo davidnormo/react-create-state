@@ -25,7 +25,7 @@ const Counter = () => {
 };
 ```
 
-[Install](#install) | [API](#api)
+[Install](#install) | [Compared](#compared) | [API](#api)
 
 ## Install
 
